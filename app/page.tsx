@@ -1,65 +1,118 @@
-import Image from "next/image";
+import Link from 'next/link';
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="space-y-20">
+      {/* Hero */}
+      <section className="relative mt-8 overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600 via-blue-600 to-indigo-700 p-8 md:p-12">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-20"></div>
+        <div className="relative flex flex-col gap-8 md:flex-row md:items-center md:gap-12">
+          <div className="flex-1 space-y-5">
+            <p className="text-sm font-semibold uppercase tracking-wide text-indigo-200">
+              1-on-1 LSAT Tutoring
+            </p>
+            <h1 className="text-4xl font-bold leading-tight text-white md:text-5xl">
+              Raise your LSAT score with focused, personalized sessions.
+            </h1>
+            <p className="text-lg leading-relaxed text-indigo-100">
+              Get expert 1-on-1 LSAT tutoring with Satchel, who specializes in building personalized strategies, strengthening core skills, and boosting your confidence on every section of the LSAT.
+            </p>
+            <Link
+              href="/book"
+              className="inline-block rounded-lg bg-white px-6 py-3 text-base font-semibold text-indigo-600 transition-all hover:bg-indigo-50 hover:shadow-lg"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              Book a session
+            </Link>
+          </div>
+          {/* Optional placeholder for a future image */}
+          <div className="flex-1 rounded-xl border-2 border-white/20 bg-white/10 backdrop-blur-sm p-6 text-center text-sm text-indigo-100">
+            Tutor photo / promo graphic
+          </div>
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section id="how-it-works" className="space-y-6">
+        <h2 className="text-2xl font-bold text-slate-900 md:text-3xl">How tutoring works</h2>
+        <div className="grid gap-6 md:grid-cols-3">
+          <div className="group rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50 p-6 shadow-md transition-all hover:shadow-xl hover:-translate-y-1">
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-600 to-blue-600 text-2xl font-bold text-white shadow-md">1</div>
+            <h3 className="mb-2 text-lg font-semibold text-slate-900">Book a time</h3>
+            <p className="text-slate-600 leading-relaxed">
+              Pick a 60-minute slot that fits your schedule through the booking
+              page.
+            </p>
+          </div>
+          <div className="group rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 p-6 shadow-md transition-all hover:shadow-xl hover:-translate-y-1">
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 text-2xl font-bold text-white shadow-md">2</div>
+            <h3 className="mb-2 text-lg font-semibold text-slate-900">Share your goals</h3>
+            <p className="text-slate-600 leading-relaxed">
+              Before the session, you can share recent PT scores and sections
+              you want to focus on.
+            </p>
+          </div>
+          <div className="group rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50 p-6 shadow-md transition-all hover:shadow-xl hover:-translate-y-1">
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-600 to-blue-600 text-2xl font-bold text-white shadow-md">3</div>
+            <h3 className="mb-2 text-lg font-semibold text-slate-900">Targeted practice</h3>
+            <p className="text-slate-600 leading-relaxed">
+              Sessions focus on the exact question types and timing issues that
+              are holding your score back.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Options */}
+      <section className="space-y-6 rounded-2xl bg-gradient-to-r from-indigo-50 to-blue-50 p-8 md:p-10">
+        <h2 className="text-2xl font-bold text-slate-900 md:text-3xl">Pricing Options</h2>
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="rounded-xl bg-white p-6 shadow-md border-2 border-indigo-100">
+            <h3 className="mb-2 text-xl font-semibold text-slate-900">One-on-One Sessions</h3>
+            <p className="mb-4 text-2xl font-bold text-indigo-600">$30/hour</p>
+            <p className="mb-4 text-slate-600">
+              Personalized tutoring sessions tailored to your needs. Book a single session 
+              or schedule recurring weekly sessions.
+            </p>
+            <Link
+              href="/book"
+              className="inline-block rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-indigo-700 hover:shadow-md"
             >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              Book a session
+            </Link>
+          </div>
+          <div className="rounded-xl bg-white p-6 shadow-md border-2 border-indigo-100">
+            <h3 className="mb-2 text-xl font-semibold text-slate-900">Materials Access</h3>
+            <p className="mb-4 text-2xl font-bold text-indigo-600">$450</p>
+            <p className="mb-4 text-slate-600">
+              Lifetime access to video library, study guides, and all future content additions.
+            </p>
+            <Link
+              href="/pricing"
+              className="inline-block rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-indigo-700 hover:shadow-md"
+            >
+              View details
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        <div className="pt-4">
+          <Link
+            href="/pricing"
+            className="inline-flex items-center gap-2 text-base font-semibold text-indigo-600 transition-colors hover:text-indigo-700"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            See full pricing breakdown
+            <span className="text-xl">→</span>
+          </Link>
         </div>
-      </main>
+      </section>
+
+      {/* Future: videos/resources */}
+      <section className="space-y-4 rounded-2xl border-2 border-indigo-100 bg-white p-8 md:p-10">
+        <h2 className="text-2xl font-bold text-slate-900 md:text-3xl">Videos & resources</h2>
+        <p className="text-lg leading-relaxed text-slate-600">
+          Soon, this site will host a library of LSAT explanation videos and
+          study guides. For now, 1-on-1 tutoring is the main focus.
+        </p>
+      </section>
     </div>
   );
 }
