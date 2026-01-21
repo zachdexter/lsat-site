@@ -1,10 +1,12 @@
 import Link from 'next/link';
+import { FadeIn } from '../components/FadeIn';
 
 export default function HomePage() {
   return (
     <div className="space-y-20">
       {/* Hero */}
-      <section className="relative mt-8 overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600 via-blue-600 to-indigo-700 p-8 md:p-12">
+      <FadeIn>
+        <section className="relative mt-8 overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600 via-blue-600 to-indigo-700 p-8 md:p-12">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-20"></div>
         <div className="relative flex flex-col gap-8 md:flex-row md:items-center md:gap-12">
           <div className="flex-1 space-y-5">
@@ -29,44 +31,55 @@ export default function HomePage() {
             Tutor photo / promo graphic
           </div>
         </div>
-      </section>
+        </section>
+      </FadeIn>
 
       {/* How it works */}
-      <section id="how-it-works" className="space-y-6">
+      <FadeIn>
+        <section id="how-it-works" className="space-y-6">
         <h2 className="text-2xl font-bold text-slate-900 md:text-3xl">How tutoring works</h2>
         <div className="grid gap-6 md:grid-cols-3">
-          <div className="group rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50 p-6 shadow-md transition-all hover:shadow-xl hover:-translate-y-1">
+          <FadeIn delayMs={0} className="h-full">
+            <div className="group rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50 p-6 shadow-md transition-all hover:shadow-xl hover:-translate-y-1">
             <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-600 to-blue-600 text-2xl font-bold text-white shadow-md">1</div>
             <h3 className="mb-2 text-lg font-semibold text-slate-900">Book a time</h3>
             <p className="text-slate-600 leading-relaxed">
               Pick a 60-minute slot that fits your schedule through the booking
               page.
             </p>
-          </div>
-          <div className="group rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 p-6 shadow-md transition-all hover:shadow-xl hover:-translate-y-1">
+            </div>
+          </FadeIn>
+          <FadeIn delayMs={80} className="h-full">
+            <div className="group rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 p-6 shadow-md transition-all hover:shadow-xl hover:-translate-y-1">
             <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 text-2xl font-bold text-white shadow-md">2</div>
             <h3 className="mb-2 text-lg font-semibold text-slate-900">Share your goals</h3>
             <p className="text-slate-600 leading-relaxed">
               Before the session, you can share recent PT scores and sections
               you want to focus on.
             </p>
-          </div>
-          <div className="group rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50 p-6 shadow-md transition-all hover:shadow-xl hover:-translate-y-1">
+            </div>
+          </FadeIn>
+          <FadeIn delayMs={160} className="h-full">
+            <div className="group rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50 p-6 shadow-md transition-all hover:shadow-xl hover:-translate-y-1">
             <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-600 to-blue-600 text-2xl font-bold text-white shadow-md">3</div>
             <h3 className="mb-2 text-lg font-semibold text-slate-900">Targeted practice</h3>
             <p className="text-slate-600 leading-relaxed">
               Sessions focus on the exact question types and timing issues that
               are holding your score back.
             </p>
-          </div>
+            </div>
+          </FadeIn>
         </div>
-      </section>
+        </section>
+      </FadeIn>
 
       {/* Pricing Options */}
-      <section className="space-y-6 rounded-2xl bg-gradient-to-r from-indigo-50 to-blue-50 p-8 md:p-10">
+      <FadeIn>
+        <section className="space-y-6 rounded-2xl bg-gradient-to-r from-indigo-50 to-blue-50 p-8 md:p-10">
         <h2 className="text-2xl font-bold text-slate-900 md:text-3xl">Pricing Options</h2>
         <div className="grid gap-6 md:grid-cols-2">
-          <div className="rounded-xl bg-white p-6 shadow-md border-2 border-indigo-100">
+          <FadeIn delayMs={0} className="h-full">
+            <div className="rounded-xl bg-white p-6 shadow-md border-2 border-indigo-100">
             <h3 className="mb-2 text-xl font-semibold text-slate-900">One-on-One Sessions</h3>
             <p className="mb-4 text-2xl font-bold text-indigo-600">$30/hour</p>
             <p className="mb-4 text-slate-600">
@@ -79,8 +92,10 @@ export default function HomePage() {
             >
               Book a session
             </Link>
-          </div>
-          <div className="rounded-xl bg-white p-6 shadow-md border-2 border-indigo-100">
+            </div>
+          </FadeIn>
+          <FadeIn delayMs={120} className="h-full">
+            <div className="rounded-xl bg-white p-6 shadow-md border-2 border-indigo-100">
             <h3 className="mb-2 text-xl font-semibold text-slate-900">Materials Access</h3>
             <p className="mb-4 text-2xl font-bold text-indigo-600">$450</p>
             <p className="mb-4 text-slate-600">
@@ -92,7 +107,8 @@ export default function HomePage() {
             >
               View details
             </Link>
-          </div>
+            </div>
+          </FadeIn>
         </div>
         <div className="pt-4">
           <Link
@@ -103,16 +119,19 @@ export default function HomePage() {
             <span className="text-xl">→</span>
           </Link>
         </div>
-      </section>
+        </section>
+      </FadeIn>
 
       {/* Future: videos/resources */}
-      <section className="space-y-4 rounded-2xl border-2 border-indigo-100 bg-white p-8 md:p-10">
+      <FadeIn>
+        <section className="space-y-4 rounded-2xl border-2 border-indigo-100 bg-white p-8 md:p-10">
         <h2 className="text-2xl font-bold text-slate-900 md:text-3xl">Videos & resources</h2>
         <p className="text-lg leading-relaxed text-slate-600">
           Soon, this site will host a library of LSAT explanation videos and
           study guides. For now, 1-on-1 tutoring is the main focus.
         </p>
-      </section>
+        </section>
+      </FadeIn>
     </div>
   );
 }

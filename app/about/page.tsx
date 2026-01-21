@@ -1,11 +1,13 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { FadeIn } from '../../components/FadeIn';
 
 export default function AboutPage() {
   return (
     <div className="space-y-16">
       {/* Hero Section */}
-      <section className="flex flex-col gap-8 md:flex-row md:items-center md:gap-12">
+      <FadeIn>
+        <section className="flex flex-col gap-8 md:flex-row md:items-center md:gap-12">
         <div className="flex-1 space-y-5">
           <p className="text-sm font-semibold uppercase tracking-wide text-indigo-600">
             About Satchel Baskette
@@ -14,8 +16,7 @@ export default function AboutPage() {
             Expert LSAT tutoring tailored to your goals
           </h1>
           <p className="text-lg leading-relaxed text-slate-600">
-            With years of experience helping students achieve their target LSAT scores, 
-            I focus on building the skills and confidence you need to succeed on test day.
+            I help students approach the LSAT with efficient strategies, diverse materials, and the confidence to perform on test day.
           </p>
         </div>
         {/* Headshot */}
@@ -24,7 +25,7 @@ export default function AboutPage() {
             <div className="aspect-[4/5] relative">
               <Image
                 src="/about/satchel_headshot.jpg?v=2"
-                alt="Satchel Basket - LSAT Tutor"
+                alt="Satchel Baskette - LSAT Tutor"
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 50vw"
@@ -34,59 +35,64 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+      </FadeIn>
 
-      {/* Background & Experience */}
-      <section className="space-y-6 rounded-2xl bg-gradient-to-r from-indigo-50 to-blue-50 p-8 md:p-10">
-        <h2 className="text-2xl font-bold text-slate-900 md:text-3xl">Background & Experience</h2>
+      {/* About Me */}
+      <FadeIn>
+        <section className="space-y-6 rounded-2xl bg-gradient-to-r from-indigo-50 to-blue-50 p-8 md:p-10">
+        <h2 className="text-2xl font-bold text-slate-900 md:text-3xl">About Me</h2>
         <div className="space-y-4 text-lg leading-relaxed text-slate-600">
           <p>
-            [Add your LSAT score, educational background, and years of tutoring experience here]
-          </p>
-          <p>
-            [Include any relevant achievements, certifications, or specializations]
+            Hi! My name is Satchel Baskette, and I am a current pre-law student at the University of Washington. I began my LSAT journey in June, 2025. After just over three months of intensive self-guided study, I earned a 177 in October. Though the process was initially often frustrating, I developed strategies and methods that helped me view the LSAT as a much more manageable (and even enjoyable) endeavor. I hope I’ll have the opportunity to share these tactics with you!
           </p>
         </div>
       </section>
+      </FadeIn>
 
       {/* Teaching Approach */}
-      <section className="space-y-6">
+      <FadeIn>
+        <section className="space-y-6">
         <h2 className="text-2xl font-bold text-slate-900 md:text-3xl">Teaching Approach</h2>
         <div className="grid gap-6 md:grid-cols-2">
-          <div className="rounded-xl bg-white p-6 shadow-md border-2 border-indigo-100">
-            <h3 className="mb-3 text-lg font-semibold text-slate-900">Personalized Strategy</h3>
+          <FadeIn delayMs={0} className="h-full">
+            <div className="rounded-xl bg-white p-6 shadow-md border-2 border-indigo-100">
+            <h3 className="mb-3 text-lg font-semibold text-slate-900">Focus on Efficiency</h3>
             <p className="text-slate-600 leading-relaxed">
-              Every student is different. I work with you to identify your strengths and 
-              weaknesses, then develop a customized study plan that targets the areas 
-              where you'll see the biggest score improvements.
+              My approach is focused on viewing the LSAT with efficiency in mind. I help you develop the ability to move through each LSAT section quickly and accurately.
             </p>
-          </div>
-          <div className="rounded-xl bg-white p-6 shadow-md border-2 border-indigo-100">
-            <h3 className="mb-3 text-lg font-semibold text-slate-900">Focus on Fundamentals</h3>
+            </div>
+          </FadeIn>
+          <FadeIn delayMs={90} className="h-full">
+            <div className="rounded-xl bg-white p-6 shadow-md border-2 border-indigo-100">
+            <h3 className="mb-3 text-lg font-semibold text-slate-900">Diverse Materials</h3>
             <p className="text-slate-600 leading-relaxed">
-              Strong LSAT performance comes from mastering the basics. We'll build a solid 
-              foundation in logic, reasoning patterns, and timing strategies that apply 
-              across all three sections of the test.
+              Everyone learns differently, so I make an effort to provide a wide range of materials including recorded lectures, written answer keys, and practice problems.
             </p>
-          </div>
-          <div className="rounded-xl bg-white p-6 shadow-md border-2 border-indigo-100">
-            <h3 className="mb-3 text-lg font-semibold text-slate-900">Practice & Feedback</h3>
+            </div>
+          </FadeIn>
+          <FadeIn delayMs={180} className="h-full">
+            <div className="rounded-xl bg-white p-6 shadow-md border-2 border-indigo-100">
+            <h3 className="mb-3 text-lg font-semibold text-slate-900">Preventing Burn-Out</h3>
             <p className="text-slate-600 leading-relaxed">
-              Regular practice with targeted feedback helps you understand not just what 
-              you got wrong, but why—and how to avoid similar mistakes in the future.
+              The LSAT can seem like an overwhelming test, and it’s easy to get burnt out. It is critical to find ways to make LSAT preparation enjoyable, and I share some of the ways I have found to make this possible.
             </p>
-          </div>
-          <div className="rounded-xl bg-white p-6 shadow-md border-2 border-indigo-100">
+            </div>
+          </FadeIn>
+          <FadeIn delayMs={270} className="h-full">
+            <div className="rounded-xl bg-white p-6 shadow-md border-2 border-indigo-100">
             <h3 className="mb-3 text-lg font-semibold text-slate-900">Test-Day Confidence</h3>
             <p className="text-slate-600 leading-relaxed">
-              Beyond content knowledge, I help you develop the mental strategies and 
-              confidence needed to perform your best under the pressure of test day.
+              Your LSAT score is based just as much on your level of confidence as it is on your mastery of content. I help you find mental strategies to ensure you feel confident and prepared on test day.
             </p>
-          </div>
+            </div>
+          </FadeIn>
         </div>
       </section>
+      </FadeIn>
 
       {/* Specializations */}
-      <section className="space-y-6 rounded-2xl border-2 border-indigo-100 bg-white p-8 md:p-10">
+      <FadeIn>
+        <section className="space-y-6 rounded-2xl border-2 border-indigo-100 bg-white p-8 md:p-10">
         <h2 className="text-2xl font-bold text-slate-900 md:text-3xl">Areas of Focus</h2>
         <div className="grid gap-4 md:grid-cols-3">
           <div className="flex items-start gap-3">
@@ -118,9 +124,11 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+      </FadeIn>
 
       {/* CTA */}
-      <section className="rounded-2xl bg-gradient-to-br from-indigo-600 via-blue-600 to-indigo-700 p-8 md:p-10 text-center">
+      <FadeIn>
+        <section className="rounded-2xl bg-gradient-to-br from-indigo-600 via-blue-600 to-indigo-700 p-8 md:p-10 text-center">
         <h2 className="mb-4 text-2xl font-bold text-white md:text-3xl">Ready to improve your LSAT score?</h2>
         <p className="mb-6 text-lg text-indigo-100">
           Book a session to discuss your goals and create a personalized study plan.
@@ -132,6 +140,7 @@ export default function AboutPage() {
           Book a session
         </Link>
       </section>
+      </FadeIn>
     </div>
   );
 }
