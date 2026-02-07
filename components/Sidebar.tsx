@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
 export function Sidebar() {
@@ -41,13 +41,43 @@ export function Sidebar() {
         setFullName(profile?.full_name ?? null);
         setIsAdmin(profile?.role === 'admin');
         setMembershipStatus(profile?.membership_status ?? null);
+      } else {
+        setHasUser(false);
+        setFullName(null);
+        setIsAdmin(false);
+        setMembershipStatus(null);
       }
 
       setIsLoadingUser(false);
     }
 
     loadUser();
+
+    // Listen for auth state changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        loadUser();
+      } else {
+        setHasUser(false);
+        setFullName(null);
+        setIsAdmin(false);
+        setMembershipStatus(null);
+        setIsLoadingUser(false);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
+
+  // Close mobile menu when pathname changes
+  useEffect(() => {
+    setIsOpen(false);
+    setShowLogin(false);
+  }, [pathname]);
 
   // Auto-clear flash messages after a short delay
   useEffect(() => {
@@ -149,17 +179,13 @@ export function Sidebar() {
           viewBox="0 0 24 24"
           stroke="currentColor"
         >
-          {isOpen ? (
-            <path d="M6 18L18 6M6 6l12 12" />
-          ) : (
-            <path d="M4 6h16M4 12h16M4 18h16" />
-          )}
+          {isOpen ? <path d="M6 18L18 6M6 6l12 12" /> : <path d="M4 6h16M4 12h16M4 18h16" />}
         </svg>
       </button>
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 z-40 h-full w-64 transform border-r border-indigo-100 bg-gradient-to-b from-white to-indigo-50/30 backdrop-blur-sm shadow-xl transition-transform duration-300 ease-in-out md:translate-x-0 ${
+        className={`fixed left-0 top-0 z-40 h-full w-64 transform border-r border-indigo-100 bg-gradient-to-b from-white to-indigo-50/30 shadow-xl backdrop-blur-sm transition-transform duration-300 ease-in-out md:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -189,7 +215,7 @@ export function Sidebar() {
                 className={`block rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
                   isActive(link.href)
                     ? 'bg-indigo-100 text-indigo-700 font-semibold shadow-sm'
-                    : 'text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 hover:translate-x-1'
+                    : 'text-slate-700 hover:translate-x-1 hover:bg-indigo-50 hover:text-indigo-600'
                 }`}
               >
                 {link.label}
@@ -221,7 +247,7 @@ export function Sidebar() {
                   className={`block rounded-lg px-4 py-2.5 text-sm font-semibold transition-all duration-200 ${
                     isActive('/admin')
                       ? 'bg-indigo-700 text-white shadow-md'
-                      : 'bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-md hover:scale-105'
+                      : 'bg-indigo-600 text-white hover:scale-105 hover:bg-indigo-700 hover:shadow-md'
                   }`}
                 >
                   Admin Dashboard
@@ -260,7 +286,7 @@ export function Sidebar() {
                 <button
                   type="button"
                   onClick={() => setShowLogin(!showLogin)}
-                  className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-all duration-200 hover:border-indigo-300 hover:text-indigo-700 hover:shadow-md hover:scale-[1.02]"
+                  className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:border-indigo-300 hover:text-indigo-700 hover:shadow-md"
                 >
                   Login or Sign Up
                 </button>
@@ -273,7 +299,9 @@ export function Sidebar() {
                     <div className="mb-3 flex items-center justify-between gap-2">
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Log in</p>
-                        <p className="text-[11px] text-slate-500">Use your Basket LSAT account email and password.</p>
+                        <p className="text-[11px] text-slate-500">
+                          Use your Basket LSAT account email and password.
+                        </p>
                       </div>
                       <button
                         type="button"
@@ -300,9 +328,21 @@ export function Sidebar() {
                         />
                       </div>
                       <div>
-                        <label htmlFor="sidebar-password" className="block text-xs font-medium text-slate-700">
-                          Password
-                        </label>
+                        <div className="mb-1 flex items-center justify-between">
+                          <label htmlFor="sidebar-password" className="block text-xs font-medium text-slate-700">
+                            Password
+                          </label>
+                          <Link
+                            href="/forgot-password"
+                            onClick={() => {
+                              setShowLogin(false);
+                              setIsOpen(false);
+                            }}
+                            className="text-[10px] font-medium text-indigo-600 hover:text-indigo-700 hover:underline"
+                          >
+                            Forgot?
+                          </Link>
+                        </div>
                         <input
                           id="sidebar-password"
                           type="password"
@@ -351,9 +391,7 @@ export function Sidebar() {
         <div className="pointer-events-none fixed left-1/2 top-4 z-50 -translate-x-1/2 px-4">
           <div
             className={`pointer-events-auto max-w-md rounded-full border px-4 py-2 text-xs font-medium shadow-md ${
-              success
-                ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
-                : 'border-red-200 bg-red-50 text-red-800'
+              success ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-red-200 bg-red-50 text-red-800'
             }`}
           >
             {success || error}
@@ -365,9 +403,22 @@ export function Sidebar() {
       {isOpen && (
         <div
           className="fixed inset-0 z-30 bg-black/20 md:hidden"
-          onClick={() => setIsOpen(false)}
+          onClick={() => {
+            setIsOpen(false);
+            setShowLogin(false);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') {
+              setIsOpen(false);
+              setShowLogin(false);
+            }
+          }}
+          role="button"
+          tabIndex={-1}
+          aria-label="Close menu"
         />
       )}
     </>
   );
 }
+

@@ -4,8 +4,6 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { FadeIn } from '../../components/FadeIn';
-import { LoadingSkeleton, TableSkeleton, CardSkeleton } from '../../components/LoadingSkeleton';
-import { EmptyState } from '../../components/EmptyState';
 
 type User = {
   id: string;
@@ -74,9 +72,8 @@ export default function AdminDashboardPage() {
 
   if (isChecking) {
     return (
-      <div className="space-y-6">
-        <LoadingSkeleton className="h-10" />
-        <CardSkeleton />
+      <div className="space-y-4">
+        <p className="text-sm text-slate-500">Checking admin access…</p>
       </div>
     );
   }
@@ -135,14 +132,11 @@ export default function AdminDashboardPage() {
 
             {!isUsersCollapsed && (
               <div className="mt-4">
-            {isLoadingUsers ? (
-              <TableSkeleton />
-            ) : users.length === 0 ? (
-              <EmptyState
-                title="No users yet"
-                message="User accounts will appear here once people sign up."
-              />
-            ) : (
+                {isLoadingUsers ? (
+                  <div className="py-8 text-center text-sm text-slate-500">Loading users…</div>
+                ) : users.length === 0 ? (
+                  <div className="py-8 text-center text-sm text-slate-500">No users found.</div>
+                ) : (
                   <div className="-mx-4 overflow-x-auto md:mx-0">
                     <table className="min-w-full divide-y divide-slate-200 text-sm">
                       <thead className="bg-slate-50">
@@ -208,7 +202,7 @@ export default function AdminDashboardPage() {
                     id="video-title"
                     type="text"
                     className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm outline-none ring-indigo-100 placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2"
-                    placeholder="e.g. Logic Games - Basic Ordering (PT 52, Game 3)"
+                    placeholder="e.g. Introduction to LSAT Strategy"
                   />
                 </div>
 
@@ -219,12 +213,12 @@ export default function AdminDashboardPage() {
                   <select
                     id="video-section"
                     className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm outline-none ring-indigo-100 focus:border-indigo-500 focus:ring-2"
-                    defaultValue="lg"
+                    defaultValue="introduction"
                   >
-                    <option value="lg">Logic Games (LG)</option>
-                    <option value="lr">Logical Reasoning (LR)</option>
-                    <option value="rc">Reading Comprehension (RC)</option>
-                    <option value="general">General Strategy</option>
+                    <option value="introduction">Introduction</option>
+                    <option value="lr">Logical Reasoning</option>
+                    <option value="rc">Reading Comprehension</option>
+                    <option value="final-tips">Final Tips</option>
                   </select>
                 </div>
 
@@ -245,7 +239,7 @@ export default function AdminDashboardPage() {
                     e.preventDefault();
                     alert('Video upload not yet implemented.');
                   }}
-                  className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-indigo-700 hover:shadow-md hover:scale-105 active:scale-95"
+                  className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-indigo-700 hover:shadow-md"
                 >
                   Upload video
                 </button>

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { BuyMaterialsButton } from '../../components/BuyMaterialsButton';
 
 export default function PricingPage() {
   return (
@@ -20,7 +21,7 @@ export default function PricingPage() {
       {/* Pricing Cards */}
       <div className="grid gap-8 md:grid-cols-2">
         {/* Materials Package */}
-        <div className="rounded-2xl border-2 border-indigo-200 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-indigo-300">
+        <div className="rounded-2xl border-2 border-indigo-200 bg-white p-8 shadow-lg">
           <div className="mb-6">
             <h2 className="mb-2 text-2xl font-bold text-slate-900">Materials Access</h2>
             <div className="flex items-baseline gap-2">
@@ -63,14 +64,16 @@ export default function PricingPage() {
             </ul>
           </div>
 
-          <div className="rounded-lg bg-indigo-50 p-4 text-sm text-slate-700">
+          <div className="mb-6 rounded-lg bg-indigo-50 p-4 text-sm text-slate-700">
             <p className="font-medium">Note:</p>
             <p>Materials are being added regularly. Purchase now to get access to all current and future content.</p>
           </div>
+
+          <BuyMaterialsButton />
         </div>
 
         {/* One-on-One Sessions */}
-        <div className="rounded-2xl border-2 border-indigo-300 bg-gradient-to-br from-indigo-50 to-blue-50 p-8 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-indigo-400">
+        <div className="rounded-2xl border-2 border-indigo-300 bg-gradient-to-br from-indigo-50 to-blue-50 p-8 shadow-lg">
           <div className="mb-6">
             <div className="mb-2 flex items-center gap-2">
               <h2 className="text-2xl font-bold text-slate-900">One-on-One Sessions</h2>
@@ -124,7 +127,7 @@ export default function PricingPage() {
 
           <Link
             href="/book"
-            className="block w-full rounded-lg bg-indigo-600 px-6 py-3 text-center text-base font-semibold text-white transition-all duration-200 hover:bg-indigo-700 hover:shadow-md hover:scale-[1.02] active:scale-95"
+            className="block w-full rounded-lg bg-indigo-600 px-6 py-3 text-center text-base font-semibold text-white transition-all hover:bg-indigo-700 hover:shadow-md"
           >
             Book a session
           </Link>
@@ -170,13 +173,13 @@ export default function PricingPage() {
         <div className="flex flex-wrap justify-center gap-4">
           <Link
             href="/book"
-            className="inline-block rounded-lg bg-white px-6 py-3 text-base font-semibold text-indigo-600 transition-all duration-200 hover:bg-indigo-50 hover:shadow-lg hover:scale-105 active:scale-95"
+            className="inline-block rounded-lg bg-white px-6 py-3 text-base font-semibold text-indigo-600 transition-all hover:bg-indigo-50 hover:shadow-lg"
           >
             Book a session
           </Link>
           <Link
             href="/about"
-            className="inline-block rounded-lg border-2 border-white px-6 py-3 text-base font-semibold text-white transition-all duration-200 hover:bg-white/10 hover:scale-105 active:scale-95"
+            className="inline-block rounded-lg border-2 border-white px-6 py-3 text-base font-semibold text-white transition-all hover:bg-white/10"
           >
             Learn more
           </Link>

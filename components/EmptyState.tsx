@@ -36,3 +36,4 @@ export function EmptyState({ title, message, actionLabel, actionHref }: EmptySta
     </div>
   );
 }
+

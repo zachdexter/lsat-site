@@ -55,7 +55,7 @@ export default function AboutPage() {
         <h2 className="text-2xl font-bold text-slate-900 md:text-3xl">Teaching Approach</h2>
         <div className="grid gap-6 md:grid-cols-2">
           <FadeIn delayMs={0} className="h-full">
-            <div className="rounded-xl bg-white p-6 shadow-md border-2 border-indigo-100 transition-all duration-300 hover:shadow-lg hover:border-indigo-200 hover:-translate-y-1">
+            <div className="rounded-xl bg-white p-6 shadow-md border-2 border-indigo-100">
             <h3 className="mb-3 text-lg font-semibold text-slate-900">Focus on Efficiency</h3>
             <p className="text-slate-600 leading-relaxed">
               My approach is focused on viewing the LSAT with efficiency in mind. I help you develop the ability to move through each LSAT section quickly and accurately.
@@ -63,7 +63,7 @@ export default function AboutPage() {
             </div>
           </FadeIn>
           <FadeIn delayMs={90} className="h-full">
-            <div className="rounded-xl bg-white p-6 shadow-md border-2 border-indigo-100 transition-all duration-300 hover:shadow-lg hover:border-indigo-200 hover:-translate-y-1">
+            <div className="rounded-xl bg-white p-6 shadow-md border-2 border-indigo-100">
             <h3 className="mb-3 text-lg font-semibold text-slate-900">Diverse Materials</h3>
             <p className="text-slate-600 leading-relaxed">
               Everyone learns differently, so I make an effort to provide a wide range of materials including recorded lectures, written answer keys, and practice problems.
@@ -71,7 +71,7 @@ export default function AboutPage() {
             </div>
           </FadeIn>
           <FadeIn delayMs={180} className="h-full">
-            <div className="rounded-xl bg-white p-6 shadow-md border-2 border-indigo-100 transition-all duration-300 hover:shadow-lg hover:border-indigo-200 hover:-translate-y-1">
+            <div className="rounded-xl bg-white p-6 shadow-md border-2 border-indigo-100">
             <h3 className="mb-3 text-lg font-semibold text-slate-900">Preventing Burn-Out</h3>
             <p className="text-slate-600 leading-relaxed">
               The LSAT can seem like an overwhelming test, and it’s easy to get burnt out. It is critical to find ways to make LSAT preparation enjoyable, and I share some of the ways I have found to make this possible.
@@ -79,7 +79,7 @@ export default function AboutPage() {
             </div>
           </FadeIn>
           <FadeIn delayMs={270} className="h-full">
-            <div className="rounded-xl bg-white p-6 shadow-md border-2 border-indigo-100 transition-all duration-300 hover:shadow-lg hover:border-indigo-200 hover:-translate-y-1">
+            <div className="rounded-xl bg-white p-6 shadow-md border-2 border-indigo-100">
             <h3 className="mb-3 text-lg font-semibold text-slate-900">Test-Day Confidence</h3>
             <p className="text-slate-600 leading-relaxed">
               Your LSAT score is based just as much on your level of confidence as it is on your mastery of content. I help you find mental strategies to ensure you feel confident and prepared on test day.
@@ -94,16 +94,7 @@ export default function AboutPage() {
       <FadeIn>
         <section className="space-y-6 rounded-2xl border-2 border-indigo-100 bg-white p-8 md:p-10">
         <h2 className="text-2xl font-bold text-slate-900 md:text-3xl">Areas of Focus</h2>
-        <div className="grid gap-4 md:grid-cols-3">
-          <div className="flex items-start gap-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-600 text-white font-bold">
-              LG
-            </div>
-            <div>
-              <h3 className="font-semibold text-slate-900 mb-1">Logic Games</h3>
-              <p className="text-sm text-slate-600">Master diagramming and game types</p>
-            </div>
-          </div>
+        <div className="grid gap-4 md:grid-cols-2">
           <div className="flex items-start gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-white font-bold">
               LR

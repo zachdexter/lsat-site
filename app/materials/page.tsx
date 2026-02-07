@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { supabase } from '../../lib/supabaseClient';
 import Link from 'next/link';
 import { FadeIn } from '../../components/FadeIn';
@@ -8,10 +9,27 @@ import { LoadingSkeleton, CardSkeleton } from '../../components/LoadingSkeleton'
 import { EmptyState } from '../../components/EmptyState';
 
 export default function MaterialsPage() {
+  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
   const [hasAccess, setHasAccess] = useState(false);
   const [membershipStatus, setMembershipStatus] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+
+  useEffect(() => {
+    // Check for success parameter in URL
+    const purchaseSuccess = searchParams.get('purchase') === 'success';
+    if (purchaseSuccess) {
+      setShowSuccessMessage(true);
+      // Clear the URL parameter after showing the message
+      window.history.replaceState({}, '', '/materials');
+      // Auto-hide success message after 5 seconds
+      const timer = setTimeout(() => {
+        setShowSuccessMessage(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     async function checkAccess() {
@@ -67,14 +85,14 @@ export default function MaterialsPage() {
         <FadeIn>
           <section className="space-y-2 text-center">
             <h1 className="text-3xl font-bold text-slate-900 md:text-4xl">Premium Materials</h1>
-            <p className="text-slate-600 text-sm">
+            <p className="text-sm text-slate-600">
               Access to video library, study guides, and exclusive LSAT resources.
             </p>
           </section>
         </FadeIn>
 
         <FadeIn delayMs={60}>
-          <section className="rounded-2xl border-2 border-indigo-100 bg-white p-8 md:p-10 text-center shadow-sm">
+          <section className="rounded-2xl border-2 border-indigo-100 bg-white p-8 text-center shadow-sm md:p-10">
             <h2 className="mb-3 text-xl font-semibold text-slate-900">Membership Required</h2>
             <p className="mb-6 text-slate-600">
               You need an active membership to access premium materials. Upgrade your account to get access to the full
@@ -102,22 +120,35 @@ export default function MaterialsPage() {
 
   return (
     <div className="space-y-10">
+      {showSuccessMessage && (
+        <FadeIn>
+          <div className="rounded-lg border-2 border-emerald-200 bg-emerald-50 p-4 text-center shadow-sm">
+            <p className="text-sm font-semibold text-emerald-900">
+              🎉 Payment successful! Your membership has been activated.
+            </p>
+            <p className="mt-1 text-xs text-emerald-700">
+              You now have full access to all premium materials.
+            </p>
+          </div>
+        </FadeIn>
+      )}
+
       <FadeIn>
         <section className="space-y-2">
           <h1 className="text-3xl font-bold text-slate-900 md:text-4xl">Premium Materials</h1>
-          <p className="text-slate-600 text-sm">
+          <p className="text-sm text-slate-600">
             Access to video library, study guides, and exclusive LSAT resources.
           </p>
         </section>
       </FadeIn>
 
       <FadeIn delayMs={60}>
-        <section className="rounded-2xl border-2 border-indigo-100 bg-white p-6 md:p-8 shadow-sm">
+        <section className="rounded-2xl border-2 border-indigo-100 bg-white p-6 shadow-sm md:p-8">
           <div className="space-y-6">
             <div>
               <h2 className="mb-2 text-xl font-semibold text-slate-900">Video Library</h2>
               <p className="text-sm text-slate-600">
-                Comprehensive video explanations for Logic Games, Logical Reasoning, and Reading Comprehension.
+                Comprehensive video explanations for Logical Reasoning and Reading Comprehension.
               </p>
             </div>
 
@@ -130,7 +161,7 @@ export default function MaterialsPage() {
       </FadeIn>
 
       <FadeIn delayMs={120}>
-        <section className="rounded-2xl border-2 border-indigo-100 bg-white p-6 md:p-8 shadow-sm">
+        <section className="rounded-2xl border-2 border-indigo-100 bg-white p-6 shadow-sm md:p-8">
           <div className="space-y-6">
             <div>
               <h2 className="mb-2 text-xl font-semibold text-slate-900">Study Guides</h2>
@@ -163,3 +194,4 @@ export default function MaterialsPage() {
     </div>
   );
 }
+
