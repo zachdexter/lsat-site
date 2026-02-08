@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
     const { data: video, error: dbError } = await supabase
       .from('videos')
       .insert({
-        title,
+        title: titleTrimmed,
         section,
         status: 'processing',
         created_by: user.id,
@@ -83,8 +83,14 @@ export async function POST(req: NextRequest) {
     // Create a Mux Direct Upload with passthrough containing videoId
     let upload;
     try {
+      // Get allowed origin from environment variable (restrict to your domain for security)
+      // Never use '*' in production - it allows CSRF attacks
+      const allowedOrigin = process.env.NEXT_PUBLIC_SITE_URL || 
+        (process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : null) ||
+        'http://localhost:3000'; // Fallback for local development only
+      
       upload = await mux.video.uploads.create({
-        cors_origin: '*', // Allow uploads from any origin (you can restrict this in production)
+        cors_origin: allowedOrigin, // Restrict to your domain to prevent CSRF attacks
         new_asset_settings: {
           playback_policies: ['public'], // Public playback (no signed URLs needed)
           passthrough: JSON.stringify({ videoId: video.id }), // Link to our video record

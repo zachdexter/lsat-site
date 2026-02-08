@@ -9,17 +9,36 @@ export async function POST(req: NextRequest) {
     const body = await req.text();
     const signature = req.headers.get('mux-signature');
 
-    // Verify webhook signature (optional but recommended)
+    // Verify webhook signature (REQUIRED for security)
     const webhookSecret = process.env.MUX_WEBHOOK_SECRET;
-    if (webhookSecret && signature) {
-      const hmac = crypto.createHmac('sha256', webhookSecret);
-      hmac.update(body);
-      const expectedSignature = hmac.digest('hex');
+    
+    if (!webhookSecret) {
+      console.error('MUX_WEBHOOK_SECRET is not configured');
+      return NextResponse.json(
+        { error: 'Webhook secret not configured' },
+        { status: 500 }
+      );
+    }
 
-      if (signature !== expectedSignature) {
-        console.error('Invalid Mux webhook signature');
-        return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
-      }
+    if (!signature) {
+      console.error('Missing Mux webhook signature');
+      return NextResponse.json(
+        { error: 'Missing signature' },
+        { status: 401 }
+      );
+    }
+
+    // Verify the signature
+    const hmac = crypto.createHmac('sha256', webhookSecret);
+    hmac.update(body);
+    const expectedSignature = hmac.digest('hex');
+
+    if (signature !== expectedSignature) {
+      console.error('Invalid Mux webhook signature');
+      return NextResponse.json(
+        { error: 'Invalid signature' },
+        { status: 401 }
+      );
     }
 
     const event = JSON.parse(body);

@@ -1,7 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '../../../../lib/stripe';
+import { rateLimit, getClientIdentifier } from '../../../../lib/rateLimit';
+
+// Rate limit: 5 checkout attempts per 15 minutes per IP
+const checkoutLimiter = rateLimit({
+  maxRequests: 5,
+  windowMs: 15 * 60 * 1000, // 15 minutes
+});
 
 export async function POST(req: NextRequest) {
+  // Apply rate limiting
+  const identifier = getClientIdentifier(req);
+  const limitResult = checkoutLimiter(identifier);
+
+  if (!limitResult.allowed) {
+    return NextResponse.json(
+      { 
+        error: 'Too many checkout attempts. Please try again later.',
+        retryAfter: Math.ceil((limitResult.resetAt - Date.now()) / 1000),
+      },
+      { 
+        status: 429,
+        headers: {
+          'Retry-After': Math.ceil((limitResult.resetAt - Date.now()) / 1000).toString(),
+          'X-RateLimit-Limit': '5',
+          'X-RateLimit-Remaining': '0',
+          'X-RateLimit-Reset': limitResult.resetAt.toString(),
+        },
+      }
+    );
+  }
+
   try {
     // Verify authentication
     const authHeader = req.headers.get('authorization');
@@ -30,24 +59,27 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid or expired session' }, { status: 401 });
     }
 
-    let origin = req.headers.get('origin');
+    // Always use environment variable for origin (never trust headers - they can be spoofed)
+    const origin = process.env.NEXT_PUBLIC_SITE_URL;
     
-    // If no origin header, try environment variable
+    // Validate origin is configured
     if (!origin) {
-      origin = process.env.NEXT_PUBLIC_SITE_URL;
-    }
-    
-    // Validate origin is a proper URL
-    if (!origin) {
-      console.error('Missing site URL: No origin header and NEXT_PUBLIC_SITE_URL not set');
+      console.error('Missing site URL: NEXT_PUBLIC_SITE_URL not set');
       return NextResponse.json({ error: 'Missing site URL configuration' }, { status: 500 });
     }
     
     // Validate URL format
+    let originUrl: URL;
     try {
-      new URL(origin);
+      originUrl = new URL(origin);
     } catch (e) {
       console.error('Invalid site URL format:', origin);
+      return NextResponse.json({ error: 'Invalid site URL configuration' }, { status: 500 });
+    }
+    
+    // Additional security: Validate origin is HTTPS (except for localhost)
+    if (originUrl.protocol !== 'https:' && originUrl.hostname !== 'localhost') {
+      console.error('Site URL must use HTTPS in production:', origin);
       return NextResponse.json({ error: 'Invalid site URL configuration' }, { status: 500 });
     }
 

@@ -1,6 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { rateLimit, getClientIdentifier } from '../../../lib/rateLimit';
+
+// Rate limit: 10 requests per minute per IP
+const recaptchaLimiter = rateLimit({
+  maxRequests: 10,
+  windowMs: 60 * 1000, // 1 minute
+});
 
 export async function POST(req: NextRequest) {
+  // Apply rate limiting
+  const identifier = getClientIdentifier(req);
+  const limitResult = recaptchaLimiter(identifier);
+
+  if (!limitResult.allowed) {
+    return NextResponse.json(
+      { 
+        error: 'Too many requests. Please try again later.',
+        retryAfter: Math.ceil((limitResult.resetAt - Date.now()) / 1000),
+      },
+      { 
+        status: 429,
+        headers: {
+          'Retry-After': Math.ceil((limitResult.resetAt - Date.now()) / 1000).toString(),
+          'X-RateLimit-Limit': '10',
+          'X-RateLimit-Remaining': '0',
+          'X-RateLimit-Reset': limitResult.resetAt.toString(),
+        },
+      }
+    );
+  }
+
   try {
     const { token } = await req.json();
 
@@ -36,12 +65,41 @@ export async function POST(req: NextRequest) {
     const threshold = 0.5; // Adjust this threshold as needed (0.5 is a common default)
 
     if (score < threshold) {
-      return NextResponse.json({ error: 'reCAPTCHA verification failed', score }, { status: 400 });
+      return NextResponse.json(
+        { error: 'reCAPTCHA verification failed', score },
+        {
+          status: 400,
+          headers: {
+            'X-RateLimit-Limit': '10',
+            'X-RateLimit-Remaining': limitResult.remaining.toString(),
+            'X-RateLimit-Reset': limitResult.resetAt.toString(),
+          },
+        }
+      );
     }
 
-    return NextResponse.json({ success: true, score });
+    return NextResponse.json(
+      { success: true, score },
+      {
+        headers: {
+          'X-RateLimit-Limit': '10',
+          'X-RateLimit-Remaining': limitResult.remaining.toString(),
+          'X-RateLimit-Reset': limitResult.resetAt.toString(),
+        },
+      }
+    );
   } catch (error) {
     console.error('Error verifying reCAPTCHA:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      {
+        status: 500,
+        headers: {
+          'X-RateLimit-Limit': '10',
+          'X-RateLimit-Remaining': limitResult.remaining.toString(),
+          'X-RateLimit-Reset': limitResult.resetAt.toString(),
+        },
+      }
+    );
   }
 }

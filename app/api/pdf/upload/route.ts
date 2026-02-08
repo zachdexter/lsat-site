@@ -52,6 +52,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'File, title, and section are required' }, { status: 400 });
     }
 
+    // Validate title (max 200 characters, no dangerous characters)
+    const titleTrimmed = title.trim();
+    if (titleTrimmed.length === 0 || titleTrimmed.length > 200) {
+      return NextResponse.json({ error: 'Title must be between 1 and 200 characters' }, { status: 400 });
+    }
+
+    // Validate section (must be one of the allowed values)
+    const allowedSections = ['introduction', 'lr', 'rc', 'final-tips'];
+    if (!allowedSections.includes(section)) {
+      return NextResponse.json({ error: 'Invalid section. Must be one of: introduction, lr, rc, final-tips' }, { status: 400 });
+    }
+
     // Validate file type
     if (file.type !== 'application/pdf') {
       return NextResponse.json({ error: 'Only PDF files are allowed' }, { status: 400 });
@@ -88,7 +100,7 @@ export async function POST(req: NextRequest) {
     const { data: pdf, error: dbError } = await supabase
       .from('pdfs')
       .insert({
-        title,
+        title: titleTrimmed,
         section,
         file_path: filePath,
         file_size: file.size,
