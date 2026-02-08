@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-      // Update the user's membership status in Supabase
+      // Update the user's materials access status in Supabase
       const supabase = createServerSupabaseClient();
       const { error: updateError } = await supabase
         .from('profiles')
@@ -49,14 +49,12 @@ export async function POST(req: NextRequest) {
         .eq('id', userId);
 
       if (updateError) {
-        console.error('Error updating membership status:', updateError);
         return NextResponse.json(
-          { error: 'Failed to update membership status', details: updateError.message },
+          { error: 'Failed to update materials access status', details: updateError.message },
           { status: 500 }
         );
       }
 
-      console.log(`Successfully updated membership status to 'active' for user ${userId}`);
       return NextResponse.json({ received: true, userId });
     } catch (error) {
       console.error('Error processing webhook:', error);

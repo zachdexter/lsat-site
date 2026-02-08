@@ -1,6 +1,8 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Sidebar } from '../components/Sidebar';
+import { ThemeProvider } from '../components/ThemeProvider';
+import { DarkModeToggle } from '../components/DarkModeToggle';
 
 export const metadata: Metadata = {
   title: 'Basket LSAT Tutoring',
@@ -14,14 +16,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40 text-slate-900 flex flex-col min-h-screen">
-        <Sidebar />
-        <main className="flex-1 mx-auto max-w-5xl px-4 pt-6 pb-12 md:px-6 md:pl-72 md:pt-8 md:pb-16">{children}</main>
-        <footer className="border-t border-indigo-100 bg-gradient-to-r from-indigo-50/50 to-blue-50/50 mt-auto">
-          <div className="mx-auto max-w-5xl px-4 py-6 text-sm text-slate-500 md:px-6 md:pl-72">
-            © {new Date().getFullYear()} Basket LSAT Tutoring
-          </div>
-        </footer>
+      <body className="bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40 text-slate-900 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 dark:text-slate-100 flex flex-col min-h-screen transition-colors duration-200">
+        <ThemeProvider>
+          <Sidebar />
+          <main className="flex-1 mx-auto max-w-5xl px-4 pt-6 pb-12 md:px-6 md:pl-72 md:pt-8 md:pb-16">{children}</main>
+          <footer className="border-t border-indigo-100 dark:border-slate-700 bg-gradient-to-r from-indigo-50/50 to-blue-50/50 dark:from-slate-800/50 dark:to-slate-800/50 mt-auto transition-colors duration-200">
+            <div className="mx-auto max-w-5xl px-4 py-6 text-sm text-slate-500 dark:text-slate-400 md:px-6 md:pl-72">
+              © {new Date().getFullYear()} Basket LSAT Tutoring
+            </div>
+          </footer>
+          <DarkModeToggle />
+        </ThemeProvider>
       </body>
     </html>
   );

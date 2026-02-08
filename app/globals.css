@@ -1,21 +1,51 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@variant dark (&:is(.dark, .dark *));
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure hover states are not blocked */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Force transitions to work - more specific */
+button:not(:disabled),
+a:not([aria-disabled="true"]),
+[role="button"]:not([aria-disabled="true"]) {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter !important;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition-duration: 150ms !important;
+}
+
+/* Style select dropdowns in dark mode */
+.dark select option {
+  background-color: #1e293b;
+  color: #f1f5f9;
+}
+
+.dark select {
+  background-color: #1e293b;
+  color: #f1f5f9;
+}
+
+/* Calendly inline widget styling */
+.calendly-inline-widget {
+  position: relative;
+}
+
+.calendly-inline-widget iframe {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 700px;
+  border: none;
 }

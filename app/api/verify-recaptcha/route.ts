@@ -25,15 +25,6 @@ export async function POST(req: NextRequest) {
 
     const data = await response.json();
 
-    console.log('reCAPTCHA verification response:', {
-      success: data.success,
-      score: data.score,
-      action: data.action,
-      challenge_ts: data.challenge_ts,
-      hostname: data.hostname,
-      'error-codes': data['error-codes'],
-    });
-
     if (!data.success) {
       console.error('reCAPTCHA verification failed:', data['error-codes']);
       return NextResponse.json({ error: 'reCAPTCHA verification failed', details: data['error-codes'] }, { status: 400 });
@@ -44,14 +35,10 @@ export async function POST(req: NextRequest) {
     const score = data.score || 0;
     const threshold = 0.5; // Adjust this threshold as needed (0.5 is a common default)
 
-    console.log(`reCAPTCHA score: ${score}, threshold: ${threshold}`);
-
     if (score < threshold) {
-      console.warn(`reCAPTCHA score ${score} is below threshold ${threshold}`);
       return NextResponse.json({ error: 'reCAPTCHA verification failed', score }, { status: 400 });
     }
 
-    console.log('reCAPTCHA verification passed');
     return NextResponse.json({ success: true, score });
   } catch (error) {
     console.error('Error verifying reCAPTCHA:', error);

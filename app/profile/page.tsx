@@ -34,9 +34,8 @@ export default function ProfilePage() {
         .maybeSingle();
 
       if (profileError) {
-        console.error('Error loading profile in ProfilePage:', profileError);
+        // Error loading profile, will show null state
       }
-      console.log('Profile page data:', data);
 
       setProfile({
         full_name: data?.full_name ?? null,
@@ -53,7 +52,7 @@ export default function ProfilePage() {
     return (
       <FadeIn>
         <div className="space-y-4">
-          <p className="text-sm text-slate-500">Loading your profile…</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Loading your profile…</p>
         </div>
       </FadeIn>
     );
@@ -63,11 +62,21 @@ export default function ProfilePage() {
     return (
       <FadeIn>
         <div className="space-y-4">
-          <h1 className="text-2xl font-bold text-slate-900">Profile</h1>
-          <p className="text-sm text-slate-600">You need to be logged in to view your profile.</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Profile</h1>
+          <p className="text-sm text-slate-600 dark:text-slate-400">You need to be logged in to view your profile.</p>
           <Link
             href="/"
-            className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-indigo-300 hover:text-indigo-700"
+            className="inline-flex items-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 transition-all hover:border-indigo-300 dark:hover:border-indigo-600 hover:text-indigo-700 dark:hover:text-indigo-400 hover:scale-[1.02] active:scale-95"
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = '#818cf8';
+              e.currentTarget.style.color = '#4338ca';
+              e.currentTarget.style.transform = 'scale(1.02)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = '';
+              e.currentTarget.style.color = '';
+              e.currentTarget.style.transform = '';
+            }}
           >
             ← Back to home
           </Link>
@@ -80,24 +89,31 @@ export default function ProfilePage() {
     <div className="space-y-6">
       <FadeIn>
         <section className="space-y-2">
-          <h1 className="text-3xl font-bold text-slate-900">Profile</h1>
-          <p className="text-slate-600 text-sm">
-            This page will eventually let you manage your membership and personal information. For now, it just shows
-            what&apos;s stored in your profile.
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Profile</h1>
+          <p className="text-slate-600 dark:text-slate-400 text-sm">
+            View your account information and materials access status.
           </p>
         </section>
       </FadeIn>
 
       <FadeIn delayMs={120}>
-        <section className="space-y-4 rounded-2xl border-2 border-indigo-100 bg-white p-6 md:p-8">
+        <section className="space-y-4 rounded-2xl border-2 border-indigo-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 md:p-8">
           <div className="space-y-1">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Name</p>
-            <p className="text-lg font-medium text-slate-900">{profile.full_name || 'No name set'}</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Name</p>
+            <p className="text-lg font-medium text-slate-900 dark:text-slate-100">{profile.full_name || 'No name set'}</p>
           </div>
 
           <div className="space-y-1">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Membership status</p>
-            <p className="text-sm text-slate-800 capitalize">{profile.membership_status || 'none'}</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Materials access</p>
+            <p className="text-sm text-slate-800 dark:text-slate-200 capitalize">
+              {profile.role === 'admin' 
+                ? 'Admin Access' 
+                : profile.membership_status === 'active' 
+                  ? 'Active' 
+                  : profile.membership_status === 'trial' 
+                    ? 'Trial' 
+                    : 'No access'}
+            </p>
           </div>
         </section>
       </FadeIn>

@@ -30,9 +30,25 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid or expired session' }, { status: 401 });
     }
 
-    const origin = req.headers.get('origin') ?? process.env.NEXT_PUBLIC_SITE_URL;
+    let origin = req.headers.get('origin');
+    
+    // If no origin header, try environment variable
     if (!origin) {
-      return NextResponse.json({ error: 'Missing site URL' }, { status: 500 });
+      origin = process.env.NEXT_PUBLIC_SITE_URL;
+    }
+    
+    // Validate origin is a proper URL
+    if (!origin) {
+      console.error('Missing site URL: No origin header and NEXT_PUBLIC_SITE_URL not set');
+      return NextResponse.json({ error: 'Missing site URL configuration' }, { status: 500 });
+    }
+    
+    // Validate URL format
+    try {
+      new URL(origin);
+    } catch (e) {
+      console.error('Invalid site URL format:', origin);
+      return NextResponse.json({ error: 'Invalid site URL configuration' }, { status: 500 });
     }
 
     const session = await stripe.checkout.sessions.create({

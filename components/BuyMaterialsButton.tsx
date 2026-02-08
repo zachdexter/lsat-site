@@ -8,7 +8,9 @@ export function BuyMaterialsButton() {
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [hasAccess, setHasAccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
     async function checkAuth() {
@@ -16,10 +18,54 @@ export function BuyMaterialsButton() {
         data: { user },
       } = await supabase.auth.getUser();
       setIsAuthenticated(!!user);
+      
+      if (user) {
+        // Check if user already has access
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role, membership_status')
+          .eq('id', user.id)
+          .maybeSingle();
+        
+        const userIsAdmin = profile?.role === 'admin';
+        const userHasMembership = profile?.membership_status === 'active' || profile?.membership_status === 'trial';
+        setHasAccess(userIsAdmin || userHasMembership);
+      } else {
+        setHasAccess(false);
+      }
+      
       setIsCheckingAuth(false);
     }
 
     checkAuth();
+
+    // Listen for auth state changes (e.g., when user logs in from sidebar)
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      setIsAuthenticated(!!session?.user);
+      
+      if (session?.user) {
+        // Check if user already has access
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role, membership_status')
+          .eq('id', session.user.id)
+          .maybeSingle();
+        
+        const userIsAdmin = profile?.role === 'admin';
+        const userHasMembership = profile?.membership_status === 'active' || profile?.membership_status === 'trial';
+        setHasAccess(userIsAdmin || userHasMembership);
+      } else {
+        setHasAccess(false);
+      }
+      
+      setIsCheckingAuth(false);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   async function handleClick() {
@@ -89,26 +135,50 @@ export function BuyMaterialsButton() {
 
   if (!isAuthenticated) {
     return (
-      <div className="space-y-3">
-        <div className="rounded-lg border-2 border-amber-200 bg-amber-50 p-4 text-center">
-          <p className="mb-4 text-sm font-medium text-amber-900">
-            You need to be logged in to purchase materials access.
-          </p>
-          <div className="space-y-3">
-            <Link
-              href="/signup"
-              className="inline-block w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-indigo-700 hover:shadow-md"
+      <div className="relative w-full">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            disabled
+            className="flex-1 rounded-lg bg-slate-300 dark:bg-slate-600 px-6 py-3 text-center text-base font-semibold text-slate-500 dark:text-slate-400 cursor-not-allowed"
+          >
+            Purchase materials access
+          </button>
+          <div className="relative">
+            <button
+              type="button"
+              className="flex items-center justify-center w-6 h-6 rounded-full bg-slate-400 dark:bg-slate-500 text-white text-xs font-semibold hover:bg-slate-500 dark:hover:bg-slate-400 transition-colors cursor-help"
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
+              onClick={() => setShowTooltip(!showTooltip)}
+              aria-label="Information about purchasing materials access"
             >
-              Create an account
-            </Link>
-            <p className="text-xs text-amber-700">
-              Already have an account?{' '}
-              <Link href="/login" className="font-semibold text-indigo-700 underline-offset-2 hover:text-indigo-800 hover:underline">
-                Log in
-              </Link>
-            </p>
+              i
+            </button>
+            {showTooltip && (
+              <div className="absolute right-0 top-full mt-2 w-64 px-3 py-2 bg-slate-800 dark:bg-slate-700 text-white text-xs rounded-lg shadow-lg z-10">
+                Please log in to purchase materials access. You can create an account or log in using the sidebar.
+                <div className="absolute -top-1 right-4">
+                  <div className="border-4 border-transparent border-b-slate-800 dark:border-b-slate-700"></div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
+      </div>
+    );
+  }
+
+  // If user already has access, show thank you message
+  if (hasAccess) {
+    return (
+      <div className="rounded-lg border-2 border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/30 p-6 text-center">
+        <p className="text-base font-semibold text-emerald-900 dark:text-emerald-200 mb-2">
+          Thank you for your support!
+        </p>
+        <p className="text-sm text-emerald-700 dark:text-emerald-300">
+          You already have access to premium materials.
+        </p>
       </div>
     );
   }
@@ -120,10 +190,24 @@ export function BuyMaterialsButton() {
         onClick={handleClick}
         disabled={isLoading}
         className="w-full rounded-lg bg-indigo-600 px-6 py-3 text-center text-base font-semibold text-white shadow-sm transition-all duration-200 hover:bg-indigo-700 hover:shadow-md hover:scale-[1.02] active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
+        onMouseEnter={(e) => {
+          if (!e.currentTarget.disabled) {
+            e.currentTarget.style.backgroundColor = '#4f46e5';
+            e.currentTarget.style.boxShadow = '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)';
+            e.currentTarget.style.transform = 'scale(1.02)';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!e.currentTarget.disabled) {
+            e.currentTarget.style.backgroundColor = '';
+            e.currentTarget.style.boxShadow = '';
+            e.currentTarget.style.transform = '';
+          }
+        }}
       >
         {isLoading ? 'Redirecting to checkout…' : 'Purchase materials access'}
       </button>
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <p className="text-xs text-red-600 dark:text-red-400">{error}</p>}
     </div>
   );
 }
