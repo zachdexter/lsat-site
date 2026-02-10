@@ -115,29 +115,39 @@ export function Sidebar() {
     setError(null);
     setSuccess(null);
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
-    });
-    
-    // Handle remember me
-    if (rememberMe) {
-      localStorage.setItem('rememberedEmail', email.trim());
-    } else {
-      localStorage.removeItem('rememberedEmail');
-    }
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
 
-    if (error) {
-      setError(error.message);
-      return;
-    }
+      // Handle remember me
+      if (rememberMe) {
+        localStorage.setItem('rememberedEmail', email.trim());
+      } else {
+        localStorage.removeItem('rememberedEmail');
+      }
 
-    if (data.user) {
-      const { data: profile } = await supabase
+      if (error) {
+        setError(error.message);
+        return;
+      }
+
+      if (!data.user) {
+        setError('Unable to log in. Please try again.');
+        return;
+      }
+
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('role, full_name, membership_status')
         .eq('id', data.user.id)
         .maybeSingle();
+
+      if (profileError) {
+        // Don't block login if profile read fails—user is still authenticated.
+        console.error('Error loading profile after login:', profileError);
+      }
 
       const isUserAdmin = profile?.role === 'admin';
       setHasUser(true);
@@ -153,6 +163,9 @@ export function Sidebar() {
       if (isUserAdmin) {
         router.push('/admin');
       }
+    } catch (err) {
+      console.error('Sidebar login failed:', err);
+      setError('Login failed. Please refresh the page and try again.');
     }
   }
 

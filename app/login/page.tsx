@@ -43,25 +43,29 @@ export default function LoginPage() {
     setError(null);
     setIsLoading(true);
 
-    const { data, error: authError } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
-    });
-    
-    // Handle remember me
-    if (rememberMe) {
-      localStorage.setItem('rememberedEmail', email.trim());
-    } else {
-      localStorage.removeItem('rememberedEmail');
-    }
+    try {
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
 
-    if (authError) {
-      setError(authError.message);
-      setIsLoading(false);
-      return;
-    }
+      // Handle remember me
+      if (rememberMe) {
+        localStorage.setItem('rememberedEmail', email.trim());
+      } else {
+        localStorage.removeItem('rememberedEmail');
+      }
 
-    if (data.user) {
+      if (authError) {
+        setError(authError.message);
+        return;
+      }
+
+      if (!data.user) {
+        setError('Unable to log in. Please try again.');
+        return;
+      }
+
       // Check if user is admin and redirect accordingly
       const { data: profile } = await supabase
         .from('profiles')
@@ -69,12 +73,16 @@ export default function LoginPage() {
         .eq('id', data.user.id)
         .maybeSingle();
 
-      setIsLoading(false);
       if (profile?.role === 'admin') {
         router.push('/admin');
       } else {
         router.push('/');
       }
+    } catch (err) {
+      console.error('Login failed:', err);
+      setError('Login failed. Please refresh the page and try again.');
+    } finally {
+      setIsLoading(false);
     }
   }
 

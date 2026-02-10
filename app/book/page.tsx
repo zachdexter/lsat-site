@@ -59,7 +59,7 @@ export default function BookPage() {
     <div className="space-y-8">
       <FadeIn>
         <section className="space-y-4 rounded-2xl bg-gradient-to-br from-indigo-600 via-blue-600 to-indigo-700 dark:from-indigo-800 dark:via-indigo-900 dark:to-indigo-950 p-8 md:p-10">
-          <h1 className="text-3xl font-bold text-white md:text-4xl">Book a session with Satchel Basket</h1>
+          <h1 className="text-3xl font-bold text-white md:text-4xl">Book a session with Satchel Baskette</h1>
           <p className="text-lg leading-relaxed text-indigo-100 dark:text-indigo-200">
             Choose a time that works for you. You&apos;ll receive a confirmation email with the meeting link and any prep
             details.

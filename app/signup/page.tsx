@@ -29,17 +29,29 @@ export default function SignUpPage() {
   useEffect(() => {
     // Check if user is already logged in
     async function checkAuth() {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      
-      if (user) {
-        // User is already logged in, redirect to home
-        router.push('/');
-        return;
+      try {
+        // Avoid hanging forever if Supabase is unreachable or the call stalls.
+        const timeoutMs = 5000;
+        const result = await Promise.race([
+          supabase.auth.getUser(),
+          new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Auth check timed out')), timeoutMs)),
+        ]);
+
+        const user = (result as Awaited<ReturnType<typeof supabase.auth.getUser>>).data.user;
+
+        if (user) {
+          // User is already logged in, redirect to home
+          setIsCheckingAuth(false);
+          router.replace('/');
+          return;
+        }
+      } catch (e) {
+        // If auth check fails, don't block the signup page.
+        // Optionally surface a soft warning so user isn't confused.
+        console.error('Signup auth check failed:', e);
+      } finally {
+        setIsCheckingAuth(false);
       }
-      
-      setIsCheckingAuth(false);
     }
     
     checkAuth();

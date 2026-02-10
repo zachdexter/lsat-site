@@ -59,15 +59,30 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid or expired session' }, { status: 401 });
     }
 
-    // Always use environment variable for origin (never trust headers - they can be spoofed)
-    const origin = process.env.NEXT_PUBLIC_SITE_URL;
-    
-    // Validate origin is configured
+    // We prefer a configured site URL (prevents origin spoofing).
+    // For local development, if it's not set, we derive the origin from request headers,
+    // but ONLY allow localhost/127.0.0.1 in that fallback path.
+    const configuredOrigin = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+
+    let origin = configuredOrigin || '';
+
     if (!origin) {
-      console.error('Missing site URL: NEXT_PUBLIC_SITE_URL not set');
-      return NextResponse.json({ error: 'Missing site URL configuration' }, { status: 500 });
+      const proto = req.headers.get('x-forwarded-proto')?.split(',')[0]?.trim() || 'http';
+      const host =
+        req.headers.get('x-forwarded-host')?.split(',')[0]?.trim() ||
+        req.headers.get('host')?.split(',')[0]?.trim() ||
+        '';
+
+      if (!host) {
+        return NextResponse.json({ error: 'Missing site URL configuration' }, { status: 500 });
+      }
+
+      origin = `${proto}://${host}`;
     }
-    
+
+    // Normalize (avoid trailing slash issues)
+    origin = origin.replace(/\/+$/, '');
+
     // Validate URL format
     let originUrl: URL;
     try {
@@ -76,9 +91,21 @@ export async function POST(req: NextRequest) {
       console.error('Invalid site URL format:', origin);
       return NextResponse.json({ error: 'Invalid site URL configuration' }, { status: 500 });
     }
-    
-    // Additional security: Validate origin is HTTPS (except for localhost)
-    if (originUrl.protocol !== 'https:' && originUrl.hostname !== 'localhost') {
+
+    // If the origin came from headers (no env var), only allow localhost.
+    if (!configuredOrigin) {
+      const isLocalhost =
+        originUrl.hostname === 'localhost' ||
+        originUrl.hostname === '127.0.0.1' ||
+        originUrl.hostname === '::1';
+      if (!isLocalhost) {
+        console.error('NEXT_PUBLIC_SITE_URL must be set in production:', origin);
+        return NextResponse.json({ error: 'Missing site URL configuration' }, { status: 500 });
+      }
+    }
+
+    // Additional security: Require HTTPS in production (except localhost)
+    if (originUrl.protocol !== 'https:' && originUrl.hostname !== 'localhost' && originUrl.hostname !== '127.0.0.1' && originUrl.hostname !== '::1') {
       console.error('Site URL must use HTTPS in production:', origin);
       return NextResponse.json({ error: 'Invalid site URL configuration' }, { status: 500 });
     }
