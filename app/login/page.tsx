@@ -2,13 +2,12 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { supabase } from '../../lib/supabaseClient';
 import { FadeIn } from '../../components/FadeIn';
 
 export default function LoginPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -17,26 +16,32 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Check for password reset success message
-    if (searchParams.get('password') === 'reset') {
-      setSuccess('Password reset successfully! You can now log in with your new password.');
-      // Clear the URL parameter
-      window.history.replaceState({}, '', '/login');
+    // This effect runs only on the client because the page is a client component.
+    // Read query params from window.location instead of useSearchParams to avoid
+    // SSR Suspense requirements during build.
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+
+      // Check for password reset success message
+      if (params.get('password') === 'reset') {
+        setSuccess('Password reset successfully! You can now log in with your new password.');
+        window.history.replaceState({}, '', '/login');
+      }
+
+      // Check for email verification message
+      if (params.get('verified') === 'true') {
+        setSuccess('Email verified successfully! You can now log in.');
+        window.history.replaceState({}, '', '/login');
+      }
+
+      // Load remembered email if available
+      const rememberedEmail = localStorage.getItem('rememberedEmail');
+      if (rememberedEmail) {
+        setEmail(rememberedEmail);
+        setRememberMe(true);
+      }
     }
-    
-    // Check for email verification message
-    if (searchParams.get('verified') === 'true') {
-      setSuccess('Email verified successfully! You can now log in.');
-      window.history.replaceState({}, '', '/login');
-    }
-    
-    // Load remembered email if available
-    const rememberedEmail = localStorage.getItem('rememberedEmail');
-    if (rememberedEmail) {
-      setEmail(rememberedEmail);
-      setRememberMe(true);
-    }
-  }, [searchParams]);
+  }, []);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();

@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { supabase } from '../../lib/supabaseClient';
 import Link from 'next/link';
 import { FadeIn } from '../../components/FadeIn';
@@ -9,7 +8,6 @@ import { LoadingSkeleton, CardSkeleton } from '../../components/LoadingSkeleton'
 import { EmptyState } from '../../components/EmptyState';
 
 export default function MaterialsPage() {
-  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
   const [hasAccess, setHasAccess] = useState(false);
   const [membershipStatus, setMembershipStatus] = useState<string | null>(null);
@@ -21,19 +19,22 @@ export default function MaterialsPage() {
   const [isLoadingPdfs, setIsLoadingPdfs] = useState(false);
 
   useEffect(() => {
-    // Check for success parameter in URL
-    const purchaseSuccess = searchParams.get('purchase') === 'success';
-    if (purchaseSuccess) {
-      setShowSuccessMessage(true);
-      // Clear the URL parameter after showing the message
-      window.history.replaceState({}, '', '/materials');
-      // Auto-hide success message after 5 seconds
-      const timer = setTimeout(() => {
-        setShowSuccessMessage(false);
-      }, 5000);
-      return () => clearTimeout(timer);
+    // Check for success parameter in URL (client-side only)
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const purchaseSuccess = params.get('purchase') === 'success';
+      if (purchaseSuccess) {
+        setShowSuccessMessage(true);
+        // Clear the URL parameter after showing the message
+        window.history.replaceState({}, '', '/materials');
+        // Auto-hide success message after 5 seconds
+        const timer = setTimeout(() => {
+          setShowSuccessMessage(false);
+        }, 5000);
+        return () => clearTimeout(timer);
+      }
     }
-  }, [searchParams]);
+  }, []);
 
   useEffect(() => {
     async function checkAccess() {

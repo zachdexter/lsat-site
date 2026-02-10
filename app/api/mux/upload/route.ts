@@ -60,6 +60,24 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Title and section are required' }, { status: 400 });
     }
 
+    // Validate and normalize title
+    const titleTrimmed = typeof title === 'string' ? title.trim() : '';
+    if (titleTrimmed.length === 0 || titleTrimmed.length > 200) {
+      return NextResponse.json(
+        { error: 'Title must be between 1 and 200 characters.' },
+        { status: 400 }
+      );
+    }
+
+    // Validate section against allowed values
+    const allowedSections = ['introduction', 'lr', 'rc', 'final-tips'] as const;
+    if (!allowedSections.includes(section)) {
+      return NextResponse.json(
+        { error: 'Invalid section. Must be one of: introduction, lr, rc, final-tips.' },
+        { status: 400 }
+      );
+    }
+
     // Create video record first to get the ID (needed for passthrough)
     const { data: video, error: dbError } = await supabase
       .from('videos')
