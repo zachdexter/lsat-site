@@ -7,21 +7,9 @@ const CALENDLY_URL = 'https://calendly.com/satchelbaskette';
 
 export default function BookPage() {
   const [isLoading, setIsLoading] = useState(true);
-  const hasReloaded = useRef(false);
 
   useEffect(() => {
-    // Force a full page reload on first navigation to ensure Calendly loads properly
-    if (!hasReloaded.current && typeof window !== 'undefined') {
-      // Check if we're in the browser (not SSR)
-      if (document.readyState === 'complete') {
-        // This is a client-side navigation, force reload once
-        hasReloaded.current = true;
-        window.location.reload();
-        return;
-      }
-    }
-
-    // Load Calendly CSS
+    // Load Calendly CSS if not already present
     if (!document.querySelector('link[href*="calendly.com"]')) {
       const link = document.createElement('link');
       link.href = 'https://assets.calendly.com/assets/external/widget.css';
@@ -36,22 +24,30 @@ export default function BookPage() {
       const script = document.createElement('script');
       script.src = 'https://assets.calendly.com/assets/external/widget.js';
       script.async = true;
-      
+
       script.onload = () => {
-        // Give Calendly a moment to process the data-url attribute
+        // Give Calendly a moment to process the data-url attribute and render the widget
         setTimeout(() => {
           setIsLoading(false);
-        }, 1000);
+        }, 1500);
       };
-      
+
       script.onerror = () => {
+        // If the script fails to load, stop the spinner but keep the area visible
         setIsLoading(false);
       };
 
       document.body.appendChild(script);
     } else {
-      // Script already loaded, hide loading immediately
-      setIsLoading(false);
+      // Script already loaded (e.g., client-side navigation). Give Calendly a brief moment
+      // to hydrate the inline widget before hiding the loading state.
+      const timeoutId = window.setTimeout(() => {
+        setIsLoading(false);
+      }, 800);
+
+      return () => {
+        window.clearTimeout(timeoutId);
+      };
     }
   }, []);
 
