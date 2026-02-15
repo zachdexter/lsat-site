@@ -1,5 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/react';
 import { Sidebar } from '../components/Sidebar';
 import { ThemeProvider } from '../components/ThemeProvider';
 import { DarkModeToggle } from '../components/DarkModeToggle';
@@ -27,6 +28,7 @@ export default function RootLayout({
           </footer>
           <DarkModeToggle />
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );

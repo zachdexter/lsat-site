@@ -7,6 +7,7 @@ const CALENDLY_URL = 'https://calendly.com/satchelbaskette';
 
 export default function BookPage() {
   const [isLoading, setIsLoading] = useState(true);
+  const [showFallback, setShowFallback] = useState(false);
 
   useEffect(() => {
     // Load Calendly CSS if not already present
@@ -20,6 +21,11 @@ export default function BookPage() {
     // Load Calendly script if not already loaded
     const existingScript = document.querySelector('script[src*="calendly.com"]');
     
+    // Set a timeout to show fallback message if widget doesn't load after 10 seconds
+    const fallbackTimeout = setTimeout(() => {
+      setShowFallback(true);
+    }, 10000);
+    
     if (!existingScript) {
       const script = document.createElement('script');
       script.src = 'https://assets.calendly.com/assets/external/widget.js';
@@ -29,12 +35,22 @@ export default function BookPage() {
         // Give Calendly a moment to process the data-url attribute and render the widget
         setTimeout(() => {
           setIsLoading(false);
+          clearTimeout(fallbackTimeout);
+          // Check if widget actually rendered by looking for Calendly iframe
+          setTimeout(() => {
+            const calendlyFrame = document.querySelector('.calendly-inline-widget iframe');
+            if (!calendlyFrame) {
+              setShowFallback(true);
+            }
+          }, 2000);
         }, 1500);
       };
 
       script.onerror = () => {
         // If the script fails to load, stop the spinner but keep the area visible
         setIsLoading(false);
+        setShowFallback(true);
+        clearTimeout(fallbackTimeout);
       };
 
       document.body.appendChild(script);
@@ -43,12 +59,25 @@ export default function BookPage() {
       // to hydrate the inline widget before hiding the loading state.
       const timeoutId = window.setTimeout(() => {
         setIsLoading(false);
+        clearTimeout(fallbackTimeout);
+        // Check if widget actually rendered
+        setTimeout(() => {
+          const calendlyFrame = document.querySelector('.calendly-inline-widget iframe');
+          if (!calendlyFrame) {
+            setShowFallback(true);
+          }
+        }, 2000);
       }, 800);
 
       return () => {
         window.clearTimeout(timeoutId);
+        clearTimeout(fallbackTimeout);
       };
     }
+
+    return () => {
+      clearTimeout(fallbackTimeout);
+    };
   }, []);
 
   return (
@@ -74,6 +103,24 @@ export default function BookPage() {
                 </div>
               </div>
             )}
+            {showFallback && !isLoading && (
+              <div className="absolute inset-0 flex items-center justify-center rounded-xl border-2 border-indigo-200 dark:border-slate-700 bg-white dark:bg-slate-800 z-20">
+                <div className="text-center p-6 max-w-md">
+                  <p className="text-base font-semibold text-slate-900 dark:text-slate-100 mb-2">
+                    Calendly widget isn&apos;t loading
+                  </p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+                    Please refresh the page to try again.
+                  </p>
+                  <button
+                    onClick={() => window.location.reload()}
+                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors"
+                  >
+                    Refresh Page
+                  </button>
+                </div>
+              </div>
+            )}
             <div
               className="calendly-inline-widget rounded-xl border-2 border-indigo-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-lg"
               data-url={CALENDLY_URL}
@@ -81,7 +128,7 @@ export default function BookPage() {
                 width: '100%',
                 height: '700px',
                 minHeight: '700px',
-                opacity: isLoading ? 0 : 1,
+                opacity: isLoading || showFallback ? 0 : 1,
                 transition: 'opacity 0.3s ease-in-out'
               }}
             />
