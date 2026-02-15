@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
@@ -245,15 +246,16 @@ export function Sidebar() {
               onClick={() => {
                 setIsOpen(false);
               }}
-              className="text-xl font-bold text-slate-900 dark:text-slate-100 transition-colors hover:text-indigo-600 dark:hover:text-indigo-400"
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = '#4f46e5';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = '';
-              }}
+              className="block transition-opacity hover:opacity-80"
             >
-              Basket LSAT
+              <Image
+                src="/FullLogo.png"
+                alt="Basket LSAT"
+                width={200}
+                height={50}
+                className="h-auto w-auto max-w-full"
+                priority
+              />
             </Link>
           </div>
 
