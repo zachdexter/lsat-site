@@ -15,8 +15,9 @@ export default function PricingPage() {
           Choose the option that works for you
         </h1>
         <p className="text-lg leading-relaxed text-slate-600 dark:text-slate-300">
-          Whether you&apos;re looking for comprehensive study materials or personalized 
-          one-on-one tutoring, we have options to fit your needs and budget.
+        Whether you're looking for comprehensive study materials or personalized one-on-one tutoring, 
+        we have options to fit your needs and budget. While other plans can cost thousands of dollars 
+        and other tutors charge hundreds per hour, we’re committed to offering quality services for a fraction of the cost.
         </p>
       </section>
 
